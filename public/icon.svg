@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#2a2016" />
+      <stop offset="60%" stop-color="#1a130d" />
+      <stop offset="100%" stop-color="#0e0a07" />
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3d77a" />
+      <stop offset="45%" stop-color="#cba135" />
+      <stop offset="100%" stop-color="#8a6a1c" />
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)" />
+
+  <!-- outer ring -->
+  <circle cx="256" cy="256" r="168" fill="none" stroke="url(#gold)" stroke-width="10" opacity="0.85" />
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.5" />
+
+  <!-- lotus petals -->
+  <g fill="url(#gold)" opacity="0.9">
+    <g id="petal-set">
+      <path d="M256 104 C242 150 242 178 256 196 C270 178 270 150 256 104 Z" />
+    </g>
+    <use href="#petal-set" transform="rotate(45 256 256)" />
+    <use href="#petal-set" transform="rotate(90 256 256)" />
+    <use href="#petal-set" transform="rotate(135 256 256)" />
+    <use href="#petal-set" transform="rotate(180 256 256)" />
+    <use href="#petal-set" transform="rotate(225 256 256)" />
+    <use href="#petal-set" transform="rotate(270 256 256)" />
+    <use href="#petal-set" transform="rotate(315 256 256)" />
+  </g>
+
+  <!-- central gong boss -->
+  <circle cx="256" cy="256" r="66" fill="#120d08" stroke="url(#gold)" stroke-width="8" />
+  <circle cx="256" cy="256" r="30" fill="url(#gold)" />
+  <circle cx="256" cy="256" r="30" fill="none" stroke="#120d08" stroke-width="3" opacity="0.4" />
+</svg>

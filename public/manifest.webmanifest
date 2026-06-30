@@ -1,0 +1,18 @@
+{
+  "name": "RindiX · Interactive Gamelan Vision",
+  "short_name": "RindiX",
+  "description": "Snap a photo of a Balinese gamelan instrument and play its living digital replica.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14100c",
+  "theme_color": "#14100c",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
