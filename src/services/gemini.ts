@@ -78,6 +78,7 @@ export async function identifyInstrument(imageDataUrl: string): Promise<Identifi
     '- cengceng: small bronze cymbals, often mounted in a row.',
     '- kendang: a two-headed wooden barrel hand-drum.',
     '- rindik: a xylophone of tuned bamboo tubes.',
+    '- suling: a bamboo ring flute — a single long bamboo tube with a row of finger holes.',
     '',
     'Fill the JSON fields IN THIS ORDER:',
     '1. seen: describe literally and objectively what is actually visible (objects, shapes, colours,',

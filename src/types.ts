@@ -8,12 +8,13 @@ export type InstrumentId =
   | 'cengceng'
   | 'kendang'
   | 'rindik'
+  | 'suling'
 
 /** How the on-screen, playable replica is laid out & interacted with. */
-export type LayoutKind = 'bars' | 'reyong' | 'gong' | 'cengceng' | 'kendang'
+export type LayoutKind = 'bars' | 'reyong' | 'gong' | 'cengceng' | 'kendang' | 'suling'
 
 /** Which synthesis voice the audio engine uses for a pad. */
-export type VoiceKind = 'bronze' | 'bamboo' | 'gong' | 'cymbal' | 'drum'
+export type VoiceKind = 'bronze' | 'bamboo' | 'gong' | 'cymbal' | 'drum' | 'flute'
 
 /** A single tappable surface on an instrument (a key, kettle, drum head…). */
 export interface PadSpec {

@@ -9,7 +9,7 @@ import type { PadSpec } from '../types'
 const noiseCache = new WeakMap<BaseAudioContext, AudioBuffer>()
 
 /** A reusable 2-second white-noise buffer (one per context). */
-function noiseBuffer(ctx: BaseAudioContext): AudioBuffer {
+export function noiseBuffer(ctx: BaseAudioContext): AudioBuffer {
   const cached = noiseCache.get(ctx)
   if (cached) return cached
   const len = Math.floor(ctx.sampleRate * 2)

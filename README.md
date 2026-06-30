@@ -89,6 +89,7 @@ src/
 | **Gangsa** | Bronze metallophone | pélog | 7 tuned bars |
 | **Reyong** | Bronze gong-chime row | pélog | 12 bossed kettles |
 | **Rindik** | Bamboo xylophone | sléndro | 11 bamboo bars |
+| **Suling** | Bamboo ring flute | pélog | blow (mic *or* button) + finger holes |
 | **Gong Ageng** | Great hanging gong | — | the deep cycle-ending boom |
 | **Kempur** | Mid punctuating gong | — | phrase-marking strokes |
 | **Ceng-Ceng** | Cymbals | — | crash + interlocking *kecek* |
@@ -110,6 +111,17 @@ How the samples map:
 
 To swap or retune, edit the `sampleUrl` / `sampleRate` on any pad in
 [`src/data/instruments.ts`](src/data/instruments.ts) — no other code changes needed.
+
+### The Suling (blown flute) is special
+
+The suling is a **sustained, breath-driven** voice rather than a struck one, so it works
+differently:
+- **Blow it** by holding the **Blow & hold** button, or tap **“Blow with your breath”** to use
+  the **microphone** — the app listens for your actual breath ([useBlow.ts](src/hooks/useBlow.ts))
+  and maps its strength to the flute's volume. Mic blocked/unavailable falls back to the button.
+- **Cover finger holes to lower the pitch, lift to raise** (pélog). The tone is synthesised live
+  ([AudioEngine.ts](src/audio/AudioEngine.ts) `flute*` methods) with breath noise and vibrato; no
+  sample needed. Drop in a looping suling recording later if you have one.
 
 ## Notes & next steps
 

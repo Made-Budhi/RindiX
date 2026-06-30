@@ -4,7 +4,7 @@
 // bronze blooms the way it does in a Balinese pavilion.
 
 import type { PadSpec } from '../types'
-import { bamboo, bronze, cymbal, drum, gong } from './voices'
+import { bamboo, bronze, cymbal, drum, gong, noiseBuffer } from './voices'
 
 type VoiceFn = (ctx: BaseAudioContext, bus: AudioNode, pad: PadSpec, vel: number) => void
 
@@ -14,6 +14,22 @@ const VOICES: Record<PadSpec['voice'], VoiceFn> = {
   gong,
   cymbal,
   drum,
+  // The suling is a sustained, breath-driven voice handled by the flute*()
+  // methods below, not the one-shot strike path — so this is a no-op.
+  flute: () => {},
+}
+
+/** The persistent node graph of the sustained flute voice. */
+interface FluteNodes {
+  out: GainNode
+  send: GainNode
+  lp: BiquadFilterNode
+  osc1: OscillatorNode
+  osc2: OscillatorNode
+  osc3: OscillatorNode
+  noise: AudioBufferSourceNode
+  ng: GainNode
+  vib: OscillatorNode
 }
 
 class AudioEngineImpl {
@@ -22,6 +38,7 @@ class AudioEngineImpl {
   private wetIn: ConvolverNode | null = null
   private sampleCache = new Map<string, AudioBuffer>()
   private loadStarted = new Set<string>()
+  private flute: FluteNodes | null = null
 
   /** Lazily create the audio graph. Must be triggered by a user gesture. */
   private ensure(): AudioContext {
@@ -134,6 +151,115 @@ class AudioEngineImpl {
           }
         }),
     )
+  }
+
+  /** The shared AudioContext (created on demand). Used by the mic analyser. */
+  get context(): AudioContext {
+    return this.ensure()
+  }
+
+  // ── Sustained flute (suling) ───────────────────────────────────────
+  // A single always-on voice whose gain follows the player's breath and
+  // whose pitch glides as the fingering changes.
+
+  /** Build the flute graph once; silent until breath arrives. */
+  fluteEnsure(): void {
+    const ctx = this.ensure()
+    if (ctx.state === 'suspended') void ctx.resume()
+    if (this.flute || !this.master || !this.wetIn) return
+    const t = ctx.currentTime
+
+    const out = ctx.createGain()
+    out.gain.value = 0
+    const lp = ctx.createBiquadFilter()
+    lp.type = 'lowpass'
+    lp.frequency.value = 5200
+    lp.Q.value = 0.5
+    out.connect(lp)
+    lp.connect(this.master)
+    const send = ctx.createGain()
+    send.gain.value = 0.5 // a touch more reverb than the bronze
+    lp.connect(send).connect(this.wetIn)
+
+    const tone = (type: OscillatorType, mul: number, g: number) => {
+      const o = ctx.createOscillator()
+      o.type = type
+      o.frequency.value = 440 * mul
+      const gain = ctx.createGain()
+      gain.gain.value = g
+      o.connect(gain).connect(out)
+      o.start(t)
+      return o
+    }
+    const osc1 = tone('sine', 1, 1.0)
+    const osc2 = tone('sine', 2, 0.14)
+    const osc3 = tone('triangle', 3, 0.05)
+
+    // breath noise — the airy bamboo "shhh"
+    const noise = ctx.createBufferSource()
+    noise.buffer = noiseBuffer(ctx)
+    noise.loop = true
+    const nbp = ctx.createBiquadFilter()
+    nbp.type = 'bandpass'
+    nbp.frequency.value = 2600
+    nbp.Q.value = 0.5
+    const ng = ctx.createGain()
+    ng.gain.value = 0
+    noise.connect(nbp).connect(ng).connect(out)
+    noise.start(t)
+
+    // gentle vibrato
+    const vib = ctx.createOscillator()
+    vib.type = 'sine'
+    vib.frequency.value = 5.6
+    const vibg = ctx.createGain()
+    vibg.gain.value = 7 // cents
+    vib.connect(vibg)
+    vibg.connect(osc1.detune)
+    vibg.connect(osc2.detune)
+    vibg.connect(osc3.detune)
+    vib.start(t)
+
+    this.flute = { out, send, lp, osc1, osc2, osc3, noise, ng, vib }
+  }
+
+  /** Glide the flute to a new pitch. */
+  fluteFreq(freq: number): void {
+    const f = this.flute
+    if (!f || !this.ctx) return
+    const t = this.ctx.currentTime
+    f.osc1.frequency.setTargetAtTime(freq, t, 0.05)
+    f.osc2.frequency.setTargetAtTime(freq * 2, t, 0.05)
+    f.osc3.frequency.setTargetAtTime(freq * 3, t, 0.05)
+  }
+
+  /** Set breath strength (0 = silent, 1 = full). Drives volume + air noise. */
+  fluteBreath(intensity: number): void {
+    const f = this.flute
+    if (!f || !this.ctx) return
+    const x = Math.max(0, Math.min(1, intensity))
+    const t = this.ctx.currentTime
+    f.out.gain.setTargetAtTime(x * 0.42, t, 0.05)
+    f.ng.gain.setTargetAtTime(x * 0.1, t, 0.06)
+  }
+
+  /** Stop and discard the flute graph (on leaving the suling screen). */
+  fluteDispose(): void {
+    const f = this.flute
+    if (!f) return
+    try {
+      f.osc1.stop()
+      f.osc2.stop()
+      f.osc3.stop()
+      f.noise.stop()
+      f.vib.stop()
+    } catch {
+      /* already stopped */
+    }
+    f.out.disconnect()
+    f.send.disconnect()
+    f.lp.disconnect()
+    this.flute = null
   }
 }
 

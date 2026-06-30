@@ -176,5 +176,21 @@ export function InstrumentGlyph({ id, className }: { id: InstrumentId; className
           ))}
         </svg>
       )
+    case 'suling':
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M7 40 L40 9" />
+          <path d="M9 38 L38 11" />
+          <circle cx="36" cy="11" r="3.2" />
+          {[
+            [16, 31],
+            [21, 26],
+            [26, 21],
+            [30, 17],
+          ].map(([cx, cy]) => (
+            <circle key={`${cx}`} cx={cx} cy={cy} r="1.5" fill="currentColor" />
+          ))}
+        </svg>
+      )
   }
 }

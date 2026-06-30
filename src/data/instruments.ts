@@ -272,12 +272,34 @@ export const INSTRUMENTS: Record<InstrumentId, InstrumentDef> = {
       '/samples/rindik.wav',
     ),
   },
+
+  suling: {
+    id: 'suling',
+    name: 'Suling',
+    subtitle: 'Bamboo Ring Flute',
+    pronunciation: 'SOO-ling',
+    scale: 'pelog',
+    layout: 'suling',
+    accent: '#3f96a6',
+    tagline: 'Breath made melody.',
+    story:
+      'The suling is a bamboo ring flute — a thin band of cane wrapped near the top channels the breath against a sharp edge to sing. Its airy, vocal voice carries the lead melody, floating and ornamenting high above the bronze of the gamelan.',
+    trivia: [
+      'A narrow band of cane (the “ring”) wrapped near the mouth-end forms the windway that splits the breath against the blowing edge — the whole flute is voiced by air alone.',
+      'Suling players famously use circular breathing — inhaling through the nose while pushing stored air from the cheeks — to spin a single melody on forever, without a break.',
+      'Its breathy tone is prized for sounding almost human; the suling is said to imitate the singing voice that floats above the ensemble.',
+      'They come in many sizes for different ensembles — the long suling gambuh can be over a metre of bamboo, with a deep, haunting low register.',
+    ],
+    aliases: ['suling', 'seruling', 'flute', 'bamboo flute', 'ring flute', 'wind', 'pipe'],
+    pads: tonalPads('suling', pelog(440, 7), { voice: 'flute', decay: 0, shimmer: 0 }),
+  },
 }
 
 export const INSTRUMENT_LIST: InstrumentDef[] = [
   INSTRUMENTS.gangsa,
   INSTRUMENTS.reyong,
   INSTRUMENTS.rindik,
+  INSTRUMENTS.suling,
   INSTRUMENTS.gong,
   INSTRUMENTS.kempur,
   INSTRUMENTS.cengceng,

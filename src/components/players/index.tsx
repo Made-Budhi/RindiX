@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { audioEngine } from '../../audio/AudioEngine'
 import type { InstrumentDef, PadSpec } from '../../types'
+import { SulingInstrument } from './Suling'
 
 // ── shared interaction helpers ───────────────────────────────────────
 
@@ -51,7 +52,7 @@ export function InstrumentStage({ def }: { def: InstrumentDef }) {
         aria-hidden
       />
       <LayoutFor def={def} strike={strike} />
-      <div className="hint-tap">Tap · hold · play with many fingers</div>
+      {def.layout !== 'suling' && <div className="hint-tap">Tap · hold · play with many fingers</div>}
     </div>
   )
 }
@@ -68,6 +69,8 @@ function LayoutFor({ def, strike }: { def: InstrumentDef; strike: Strike }) {
       return <CengCengInstrument def={def} strike={strike} />
     case 'kendang':
       return <KendangInstrument def={def} strike={strike} />
+    case 'suling':
+      return <SulingInstrument def={def} />
   }
 }
 
