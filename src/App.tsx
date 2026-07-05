@@ -13,6 +13,8 @@ import { ResultReveal } from './components/ResultReveal'
 import { Scanner } from './components/Scanner'
 import { Splash } from './components/Splash'
 
+import { Analytics } from '@vercel/analytics/react';
+
 const delay = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms))
 
 export default function App() {
@@ -123,11 +125,15 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      {/* key forces the entrance animation to replay on every screen change */}
-      <div key={screen} style={{ position: 'absolute', inset: 0 }}>
-        {renderScreen()}
+    <>
+      <div className="app">
+        {/* key forces the entrance animation to replay on every screen change */}
+        <div key={screen} style={{ position: 'absolute', inset: 0 }}>
+          {renderScreen()}
+        </div>
       </div>
-    </div>
+      
+      <Analytics />
+    </>
   )
 }
