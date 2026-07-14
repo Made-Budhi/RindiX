@@ -77,16 +77,32 @@ button {
   cursor: pointer;
 }
 
-/* ── App shell (becomes a "device" on larger screens) ──────────────── */
+/* ── App shell ─────────────────────────────────────────────────────
+   Full-viewport column: a flexible app area that fills whatever space is
+   available, with the footer pinned beneath it. Content inside each screen
+   is centred within a comfortable max width, so the layout adapts to any
+   viewport — full-bleed on phones, a centred column on desktop — instead of
+   a fixed phone-shaped card. */
+
+:root {
+  --content-w: 720px; /* max width of on-screen content on wide viewports */
+}
+
+.shell {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
 
 .app {
   position: relative;
+  flex: 1 1 auto;
+  min-height: 0; /* allow the app area to shrink so the footer always shows */
   width: 100%;
-  max-width: 460px;
-  min-height: 100dvh;
   overflow: hidden;
   background:
-    radial-gradient(140% 60% at 50% 0%, #20170e 0%, transparent 55%),
+    radial-gradient(120% 55% at 50% 0%, #20170e 0%, transparent 55%),
     var(--ink-800);
   isolation: isolate;
   user-select: none;
@@ -94,27 +110,14 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-@media (min-width: 540px) {
-  body {
-    align-items: center;
-  }
-  .app {
-    margin: 22px 0;
-    min-height: auto;
-    height: min(900px, calc(100dvh - 44px));
-    border-radius: 40px;
-    border: 1px solid rgba(203, 161, 53, 0.28);
-    box-shadow: var(--shadow-deep), inset 0 0 0 6px rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* shared full-height screen */
+/* shared screen — content centred to --content-w via auto side padding */
 .screen {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  padding: calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 22px);
+  padding: calc(env(safe-area-inset-top) + 22px)
+    max(22px, calc((100% - var(--content-w)) / 2)) calc(env(safe-area-inset-bottom) + 22px);
   animation: screenIn 0.5s ease both;
 }
 
@@ -550,7 +553,8 @@ button {
    ════════════════════════════════════════════════════════════════════ */
 
 .player {
-  padding: calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 16px);
+  padding: calc(env(safe-area-inset-top) + 14px)
+    max(16px, calc((100% - var(--content-w)) / 2)) calc(env(safe-area-inset-bottom) + 16px);
   z-index: 2;
   gap: 12px;
 }
@@ -1186,13 +1190,19 @@ button {
    PICKER
    ════════════════════════════════════════════════════════════════════ */
 
-.picker { z-index: 2; gap: 16px; overflow-y: auto; }
+/* the collection gets more room to spread on wide screens */
+.picker {
+  z-index: 2;
+  gap: 16px;
+  overflow-y: auto;
+  --content-w: 940px;
+}
 .picker-head { text-align: center; display: flex; flex-direction: column; gap: 6px; }
 .picker-head h2 { font-family: var(--serif); font-size: 1.9rem; font-weight: 600; }
 .picker-head p { color: var(--bone-dim); font-size: 0.84rem; font-weight: 300; }
 .picker-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
   gap: 12px;
   padding-bottom: 12px;
 }
@@ -1249,6 +1259,58 @@ button {
   letter-spacing: 0.02em;
 }
 .error-cta { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 17rem; }
+
+/* ── Footer / team credits — slim, persistent on every screen ─────── */
+.site-footer {
+  flex: none;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3px 9px;
+  text-align: center;
+  padding: 8px 18px calc(env(safe-area-inset-bottom) + 8px);
+  border-top: 1px solid rgba(203, 161, 53, 0.14);
+  background: rgba(9, 6, 4, 0.62);
+  backdrop-filter: blur(6px);
+}
+.footer-title {
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--gold-400);
+}
+.footer-team {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 7px;
+  font-family: var(--serif);
+}
+.footer-team .member {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--bone);
+}
+.footer-team .dot { color: var(--gold-600); }
+.footer-tag { display: none; }
+
+@media (min-width: 640px) {
+  .site-footer { gap: 4px 14px; padding: 12px 22px; }
+  .footer-team .member { font-size: 1rem; }
+  .footer-tag {
+    display: inline;
+    flex-basis: 100%;
+    margin-top: 2px;
+    font-size: 0.56rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(203, 161, 53, 0.5);
+  }
+}
 
 /* utility */
 .grow { flex: 1; }
