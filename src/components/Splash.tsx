@@ -41,7 +41,6 @@ export function Splash({ onBegin }: { onBegin: () => void }) {
         </button>
       </div>
 
-      <div className="splash-foot">AI for Culture &amp; Creative Heritage</div>
 
       <div className={`gate${open ? ' opening' : ''}`} aria-hidden>
         <div className="gate-half" />

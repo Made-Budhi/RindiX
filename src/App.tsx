@@ -7,6 +7,7 @@ import type { Identification, InstrumentId, Screen } from './types'
 
 import { Analyzing } from './components/Analyzing'
 import { ErrorState } from './components/ErrorState'
+import { Footer } from './components/Footer'
 import { InstrumentPicker } from './components/InstrumentPicker'
 import { PlayerScreen } from './components/PlayerScreen'
 import { ResultReveal } from './components/ResultReveal'
@@ -126,13 +127,17 @@ export default function App() {
 
   return (
     <>
-      <div className="app">
-        {/* key forces the entrance animation to replay on every screen change */}
-        <div key={screen} style={{ position: 'absolute', inset: 0 }}>
-          {renderScreen()}
+      <div className="shell">
+        <div className="app">
+          {/* key forces the entrance animation to replay on every screen change */}
+          <div key={screen} style={{ position: 'absolute', inset: 0 }}>
+            {renderScreen()}
+          </div>
         </div>
+        {/* Persistent team credits, always pinned beneath the app area. */}
+        <Footer />
       </div>
-      
+
       <Analytics />
     </>
   )
